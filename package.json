@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "@types/puppeteer": "^7.0.4",
+    "commander": "^11.1.0",
+    "nodemon": "^3.0.2",
+    "puppeteer": "^21.6.0",
+    "ts-node": "^10.9.1",
+    "tsc": "^2.0.4"
+  },
+  "name": "uni",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon main.ts"
+  },
+  "author": "Giorgi Charashvili",
+  "license": "MIT",
+  "description": "",
+  "bin": {
+    "my-cu": "./dist/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
