@@ -9,7 +9,10 @@ import { mainFunc } from './src/main';
     .command('info <pirn>') // Use 'info' as the command name
     .description('Get Latest Info From My Cu')
     .action(async (pirn) => {
-      console.log(await mainFunc(pirn));
+      // console.log(
+
+      await mainFunc(pirn);
+      // );
     });
 
   await program.parseAsync(process.argv);
