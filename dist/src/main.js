@@ -23,7 +23,7 @@ const mainFunc = (pirn) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, helpers_1.login)(page, pirn);
         yield page.waitForNetworkIdle();
         yield page.goto('https://programs.cu.edu.ge/students/gpa.php');
-        return yield (0, helpers_1.get3Cols)(page);
+        return yield (0, helpers_1.get4Cols)(page);
     }
     catch (error) {
         console.error('An error occurred:', error);

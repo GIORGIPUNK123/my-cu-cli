@@ -9,18 +9,12 @@ const outputBuilder = (
   let resultArr: string[][] = [];
   let maxLengthArr: number[] = [];
 
-  const stringFunc = (text: string, iteration: number) => {
-    const spacesBefore = Math.max(
-      0,
-      Math.floor((maxLengthArr[iteration] - text.length) / 2)
-    );
-    const spacesAfter = Math.max(
-      0,
-      maxLengthArr[iteration] - text.length - spacesBefore
-    );
-    const buffer = Array(spacesBefore + 1).fill(' ');
+  const stringFunc = (text: string, maxLength: number) => {
+    const spacesBefore = Math.max(0, Math.floor((maxLength - text.length) / 2));
+    const spacesAfter = Math.max(0, maxLength - text.length - spacesBefore);
+    const buffer = Array(spacesBefore).fill(' ');
     buffer.push(text);
-    buffer.push(...Array(spacesAfter + 1).fill(' '));
+    buffer.push(...Array(spacesAfter).fill(' '));
     return buffer.join('');
   };
 
@@ -38,29 +32,81 @@ const outputBuilder = (
       x.maxLength - colName.length - spacesBefore
     );
 
-    headerArr.push(stringFunc(colName, i));
+    headerArr.push(stringFunc(colName, maxLengthArr[i]));
     rowsArr.push(x.arr);
   });
 
   // Transpose the matrix
   const transposedMatrix = rowsArr[0].map((_, colIndex) =>
-    rowsArr.map((row, i) => stringFunc(row[colIndex], i))
+    rowsArr.map((row, i) => stringFunc(row[colIndex], maxLengthArr[i]))
   );
-  console.log(
-    Array(headerArr.join('').length + 3)
-      .fill('_')
-      .join('')
-  );
-  console.log(`| ${headerArr.join('')} |`);
-  console.log(
-    Array(headerArr.join('').length + 3)
-      .fill('_')
-      .join('')
-  );
-  transposedMatrix.forEach((b, i) => {
-    console.log('|', b.join(''), ' |');
+
+  let prettyArr: string[] = [];
+
+  const first_buffer = [
+    '┌',
+    ...maxLengthArr.map(
+      (x, i) =>
+        `${Array(x).fill('─').join('')}${
+          i === maxLengthArr.length - 1 ? '' : '┬'
+        }`
+    ),
+    '┐',
+  ];
+  const prettierHeaderArr = [
+    '│',
+    ...maxLengthArr.map(
+      (x, i) =>
+        `${stringFunc(headerArr[i], x)}${
+          i === maxLengthArr.length - 1 ? '' : '│'
+        }`
+    ),
+    '│',
+  ];
+  const bottom_buffer = [
+    '└',
+    ...maxLengthArr.map(
+      (x, i) =>
+        `${Array(x).fill('─').join('')}${
+          i === maxLengthArr.length - 1 ? '' : '┴'
+        }`
+    ),
+    '┘',
+  ];
+  const infoPart = transposedMatrix.map((x, _) => {
+    return [
+      '│',
+      ...maxLengthArr.map(
+        (x, i) =>
+          `${stringFunc(transposedMatrix[_][i], x)}${
+            i === maxLengthArr.length - 1 ? '' : '│'
+          }`
+      ),
+      '│',
+    ];
   });
-  // console.log('transposedMatrix: ', transposedMatrix);
+  const middlePart = [
+    '├',
+    ...maxLengthArr.map(
+      (x, i) =>
+        `${Array(x).fill('─').join('')}${
+          i === maxLengthArr.length - 1 ? '' : '┼'
+        }`
+    ),
+    '┤',
+  ];
+  prettyArr.push(first_buffer.join(''));
+  prettyArr.push(prettierHeaderArr.join(''));
+  prettyArr.push(middlePart.join(''));
+  transposedMatrix.forEach((_, __) => {
+    prettyArr.push(infoPart[__].join(''));
+    __ !== transposedMatrix.length - 1
+      ? prettyArr.push(middlePart.join(''))
+      : prettyArr.push(bottom_buffer.join(''));
+  });
+  prettyArr.forEach((x) => {
+    console.log(x);
+  });
 };
 
 export const login = async (page: any, pirn: string) => {
@@ -97,7 +143,7 @@ const sbjString = (type: ColumnType, rowNumber: number) => {
   return `${baseSelector} > tr:nth-child(${rowSelector}) > td:nth-child(${columnSelector})${inputSelector}`;
 };
 
-export const get3Cols = async (
+export const get4Cols = async (
   page: Page
 ): Promise<{ name: string; arr: string[] }[]> => {
   const getColumnContent = async (
@@ -130,7 +176,6 @@ export const get3Cols = async (
     percentagesContentArr.push(percentageContent);
     marksContentArr.push(markContent);
   }
-  let pretty: string[] = [];
 
   const checkArrayContent = (arr: string[]): number => {
     return arr.reduce((maxLength, item) => {
