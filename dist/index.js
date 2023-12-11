@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9,18 +8,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const commander_1 = require("commander");
-const main_1 = require("./src/main");
+import { program } from 'commander';
+import { mainFunc } from './src/main.js';
+import select from '@inquirer/select';
+import { input } from '@inquirer/prompts';
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    commander_1.program.version('1.0.0').description('Check My Cu From CLI ');
-    commander_1.program
-        .command('info <pirn>') // Use 'info' as the command name
+    program.version('1.0.0').description('Check My Cu From CLI ');
+    program
+        .command('info') // Use 'info' as the command name
         .description('Get Latest Info From My Cu')
-        .action((pirn) => __awaiter(void 0, void 0, void 0, function* () {
+        .action(() => __awaiter(void 0, void 0, void 0, function* () {
         // console.log(
-        yield (0, main_1.mainFunc)(pirn);
+        const pirn = yield input({ message: 'Enter your ID NUMBER' });
+        (yield select({
+            message: 'Select action',
+            choices: [
+                {
+                    name: 'basic',
+                    value: 'basic',
+                    description: 'Get basic info about your gpa and grades',
+                },
+            ],
+        })) === 'basic'
+            ? yield mainFunc(pirn, 'basic')
+            : null;
         // );
     }));
-    yield commander_1.program.parseAsync(process.argv);
+    yield program.parseAsync(process.argv);
 }))();

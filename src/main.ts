@@ -1,7 +1,8 @@
 import puppeteer from 'puppeteer';
-import { login, get4Cols } from './helpers';
+import { getBasic } from './helpers/basic_helper.js';
+import { login } from './helpers/login_helper.js';
 
-export const mainFunc = async (pirn: string): Promise<any> => {
+export const mainFunc = async (pirn: string, type: 'basic'): Promise<any> => {
   const browser = await puppeteer.launch({ headless: 'new' });
   const page = await browser.newPage();
 
@@ -10,7 +11,7 @@ export const mainFunc = async (pirn: string): Promise<any> => {
     await login(page, pirn);
     await page.waitForNetworkIdle();
     await page.goto('https://programs.cu.edu.ge/students/gpa.php');
-    return await get4Cols(page);
+    return await getBasic(page);
   } catch (error) {
     console.error('An error occurred:', error);
     throw error;
