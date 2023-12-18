@@ -7,13 +7,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import chalk from 'chalk';
 const calculateGpa = (page) => __awaiter(void 0, void 0, void 0, function* () {
     const inputValue = yield page.evaluate(() => {
         const inputElement = document.querySelector('body > table > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td > table > tbody > tr:nth-child(11) > td:nth-child(3) > input');
         return inputElement ? inputElement.value : null;
     });
-    console.log('test');
-    console.log('inputValue: ', inputValue);
     return yield inputValue;
 });
 const outputBuilder = (data, gpa) => {
@@ -77,11 +76,11 @@ const outputBuilder = (data, gpa) => {
             : prettyArr.push(bottom_buffer.join(''));
     });
     prettyArr.forEach((x) => {
-        console.log(x);
+        console.log(chalk.default.blue(x));
     });
     console.log('GPA ==>', gpa);
 };
-const sbjString = (type, rowNumber) => {
+export const sbjString = (type, rowNumber) => {
     const baseSelector = 'body > table > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td > table > tbody';
     const rowSelector = type === 'name' ? rowNumber + 1 : rowNumber + 1;
     const columnSelector = type === 'name'
@@ -94,26 +93,26 @@ const sbjString = (type, rowNumber) => {
     const inputSelector = type === 'percentage' ? ' > input[type=text]' : '';
     return `${baseSelector} > tr:nth-child(${rowSelector}) > td:nth-child(${columnSelector})${inputSelector}`;
 };
+export const getColumnContent = (type, index, page) => __awaiter(void 0, void 0, void 0, function* () {
+    const selector = sbjString(type, index);
+    const element = yield page.evaluate((sbjSelector, type) => {
+        var _a, _b;
+        return type !== 'percentage'
+            ? ((_a = document.querySelector(sbjSelector)) === null || _a === void 0 ? void 0 : _a.textContent) || ''
+            : ((_b = document.querySelector(sbjSelector)) === null || _b === void 0 ? void 0 : _b.value) || '';
+    }, selector, type);
+    return element;
+});
 export const getBasic = (page) => __awaiter(void 0, void 0, void 0, function* () {
-    const getColumnContent = (type, index) => __awaiter(void 0, void 0, void 0, function* () {
-        const selector = sbjString(type, index);
-        const element = yield page.evaluate((sbjSelector, type) => {
-            var _a, _b;
-            return type !== 'percentage'
-                ? ((_a = document.querySelector(sbjSelector)) === null || _a === void 0 ? void 0 : _a.textContent) || ''
-                : ((_b = document.querySelector(sbjSelector)) === null || _b === void 0 ? void 0 : _b.value) || '';
-        }, selector, type);
-        return element;
-    });
     let namesContentArr = [];
     let creditsContentArr = [];
     let percentagesContentArr = [];
     let marksContentArr = [];
     for (let i = 1; i <= 6; i++) {
-        const nameContent = yield getColumnContent('name', i);
-        const creditContent = yield getColumnContent('credit', i);
-        const percentageContent = yield getColumnContent('percentage', i);
-        const markContent = yield getColumnContent('mark', i);
+        const nameContent = yield getColumnContent('name', i, page);
+        const creditContent = yield getColumnContent('credit', i, page);
+        const percentageContent = yield getColumnContent('percentage', i, page);
+        const markContent = yield getColumnContent('mark', i, page);
         namesContentArr.push(nameContent);
         creditsContentArr.push(creditContent);
         percentagesContentArr.push(percentageContent);

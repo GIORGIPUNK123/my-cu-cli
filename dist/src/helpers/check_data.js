@@ -7,18 +7,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { getBasic } from './helpers/basic_helper.js';
-import { subjectDetails } from './helpers/subject_details.js';
-export const mainFunc = (page, browser, pirn, type) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield page.setViewport({ width: 1080, height: 1024 });
-        type === 'basic' ? yield getBasic(page) : subjectDetails(page, type);
+import { getColumnContent } from './basic_helper.js';
+export const availableSubjects = (page) => __awaiter(void 0, void 0, void 0, function* () {
+    let names = [];
+    for (let i = 1; i < 7; i++) {
+        names.push(yield getColumnContent('name', i, page));
     }
-    catch (error) {
-        console.error('An error occurred:', error);
-        throw error;
-    }
-    finally {
-        // browser.close();
-    }
+    return names;
 });

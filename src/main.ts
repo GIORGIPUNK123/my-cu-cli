@@ -1,21 +1,21 @@
-import puppeteer from 'puppeteer';
+import puppeteer, { Browser, Page } from 'puppeteer';
 import { getBasic } from './helpers/basic_helper.js';
 import { login } from './helpers/login_helper.js';
+import { subjectDetails } from './helpers/subject_details.js';
 
-export const mainFunc = async (pirn: string, type: 'basic'): Promise<any> => {
-  const browser = await puppeteer.launch({ headless: 'new' });
-  const page = await browser.newPage();
-
+export const mainFunc = async (
+  page: Page,
+  browser: Browser,
+  pirn: string,
+  type: 'basic' | string
+): Promise<any> => {
   try {
     await page.setViewport({ width: 1080, height: 1024 });
-    await login(page, pirn);
-    await page.waitForNetworkIdle();
-    await page.goto('https://programs.cu.edu.ge/students/gpa.php');
-    return await getBasic(page);
+    type === 'basic' ? await getBasic(page) : subjectDetails(page, type);
   } catch (error) {
     console.error('An error occurred:', error);
     throw error;
   } finally {
-    browser.close();
+    // browser.close();
   }
 };

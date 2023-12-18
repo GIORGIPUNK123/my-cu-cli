@@ -8,8 +8,6 @@ const calculateGpa = async (page: Page) => {
     );
     return inputElement ? inputElement.value : null;
   });
-  console.log('test');
-  console.log('inputValue: ', inputValue);
   return await inputValue;
 };
 
@@ -118,7 +116,7 @@ const outputBuilder = (
   console.log('GPA ==>', gpa);
 };
 
-const sbjString = (type: ColumnType, rowNumber: number) => {
+export const sbjString = (type: ColumnType, rowNumber: number) => {
   const baseSelector =
     'body > table > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td > table > tbody';
   const rowSelector = type === 'name' ? rowNumber + 1 : rowNumber + 1;
@@ -135,34 +133,35 @@ const sbjString = (type: ColumnType, rowNumber: number) => {
   return `${baseSelector} > tr:nth-child(${rowSelector}) > td:nth-child(${columnSelector})${inputSelector}`;
 };
 
+export const getColumnContent = async (
+  type: ColumnType,
+  index: number,
+  page: Page
+): Promise<string> => {
+  const selector = sbjString(type, index);
+  const element = await page.evaluate(
+    (sbjSelector: any, type: ColumnType) => {
+      return type !== 'percentage'
+        ? document.querySelector(sbjSelector)?.textContent || ''
+        : document.querySelector(sbjSelector)?.value || '';
+    },
+    selector,
+    type
+  );
+  return element;
+};
 export const getBasic = async (
   page: Page
 ): Promise<{ name: string; arr: string[] }[]> => {
-  const getColumnContent = async (
-    type: ColumnType,
-    index: number
-  ): Promise<string> => {
-    const selector = sbjString(type, index);
-    const element = await page.evaluate(
-      (sbjSelector: any, type: ColumnType) => {
-        return type !== 'percentage'
-          ? document.querySelector(sbjSelector)?.textContent || ''
-          : document.querySelector(sbjSelector)?.value || '';
-      },
-      selector,
-      type
-    );
-    return element;
-  };
   let namesContentArr: string[] = [];
   let creditsContentArr: string[] = [];
   let percentagesContentArr: string[] = [];
   let marksContentArr: string[] = [];
   for (let i = 1; i <= 6; i++) {
-    const nameContent = await getColumnContent('name', i);
-    const creditContent = await getColumnContent('credit', i);
-    const percentageContent = await getColumnContent('percentage', i);
-    const markContent = await getColumnContent('mark', i);
+    const nameContent = await getColumnContent('name', i, page);
+    const creditContent = await getColumnContent('credit', i, page);
+    const percentageContent = await getColumnContent('percentage', i, page);
+    const markContent = await getColumnContent('mark', i, page);
     namesContentArr.push(nameContent);
     creditsContentArr.push(creditContent);
     percentagesContentArr.push(percentageContent);
