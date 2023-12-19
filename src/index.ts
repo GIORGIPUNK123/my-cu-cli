@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 import { program } from 'commander';
-import { mainFunc } from './src/main.js';
-import inquirer from 'inquirer';
+import { mainFunc } from './main.js';
 import select, { Separator } from '@inquirer/select';
 import { input } from '@inquirer/prompts';
-import { availableSubjects } from './src/helpers/check_data.js';
+import { availableSubjects } from './helpers/check_data.js';
 import puppeteer from 'puppeteer';
-import { login } from './src/helpers/login_helper.js';
+import { login } from './helpers/login_helper.js';
 
 (async () => {
   const browser = await puppeteer.launch({ headless: 'new' });
@@ -16,7 +15,6 @@ import { login } from './src/helpers/login_helper.js';
     .command('info') // Use 'info' as the command name
     .description('Get Latest Info From My Cu')
     .action(async () => {
-      // console.log(
       const pirn = await input({ message: 'Enter your ID NUMBER' });
       await login(page, pirn);
       await page.waitForNetworkIdle();
@@ -41,7 +39,7 @@ import { login } from './src/helpers/login_helper.js';
         ],
       });
       await mainFunc(page, browser, pirn, answer);
-      // );
+      // await browser.close();
     });
 
   await program.parseAsync(process.argv);

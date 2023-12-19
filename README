@@ -1,0 +1,10 @@
+This is a node js cli app made for my-cu platform you can basically get info about your marks from terminal without struggle
+
+it is using pupeeter for scraping commander for cli stuff and inquirer for cli options
+
+install it by running
+
+git clone https://github.com/GIORGIPUNK123/my-cu-cli
+cd my-cu-cli
+npm i
+npm link

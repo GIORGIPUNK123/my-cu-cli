@@ -7,7 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import chalk from 'chalk';
 const calculateGpa = (page) => __awaiter(void 0, void 0, void 0, function* () {
     const inputValue = yield page.evaluate(() => {
         const inputElement = document.querySelector('body > table > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td > table > tbody > tr:nth-child(11) > td:nth-child(3) > input');
@@ -76,7 +75,7 @@ const outputBuilder = (data, gpa) => {
             : prettyArr.push(bottom_buffer.join(''));
     });
     prettyArr.forEach((x) => {
-        console.log(chalk.default.blue(x));
+        console.log(x);
     });
     console.log('GPA ==>', gpa);
 };

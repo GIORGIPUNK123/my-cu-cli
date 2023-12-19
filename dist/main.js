@@ -12,13 +12,13 @@ import { subjectDetails } from './helpers/subject_details.js';
 export const mainFunc = (page, browser, pirn, type) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield page.setViewport({ width: 1080, height: 1024 });
-        type === 'basic' ? yield getBasic(page) : subjectDetails(page, type);
+        type === 'basic' ? yield getBasic(page) : yield subjectDetails(page, type);
     }
     catch (error) {
         console.error('An error occurred:', error);
         throw error;
     }
     finally {
-        // browser.close();
+        yield browser.close();
     }
 });

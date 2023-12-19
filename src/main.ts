@@ -11,11 +11,11 @@ export const mainFunc = async (
 ): Promise<any> => {
   try {
     await page.setViewport({ width: 1080, height: 1024 });
-    type === 'basic' ? await getBasic(page) : subjectDetails(page, type);
+    type === 'basic' ? await getBasic(page) : await subjectDetails(page, type);
   } catch (error) {
     console.error('An error occurred:', error);
     throw error;
   } finally {
-    // browser.close();
+    await browser.close();
   }
 };

@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { program } from 'commander';
-import { mainFunc } from './src/main.js';
+import { mainFunc } from './main.js';
 import select from '@inquirer/select';
 import { input } from '@inquirer/prompts';
-import { availableSubjects } from './src/helpers/check_data.js';
+import { availableSubjects } from './helpers/check_data.js';
 import puppeteer from 'puppeteer';
-import { login } from './src/helpers/login_helper.js';
+import { login } from './helpers/login_helper.js';
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const browser = yield puppeteer.launch({ headless: 'new' });
     const page = yield browser.newPage();
@@ -23,7 +23,6 @@ import { login } from './src/helpers/login_helper.js';
         .command('info') // Use 'info' as the command name
         .description('Get Latest Info From My Cu')
         .action(() => __awaiter(void 0, void 0, void 0, function* () {
-        // console.log(
         const pirn = yield input({ message: 'Enter your ID NUMBER' });
         yield login(page, pirn);
         yield page.waitForNetworkIdle();
@@ -48,7 +47,7 @@ import { login } from './src/helpers/login_helper.js';
             ],
         });
         yield mainFunc(page, browser, pirn, answer);
-        // );
+        // await browser.close();
     }));
     yield program.parseAsync(process.argv);
 }))();
