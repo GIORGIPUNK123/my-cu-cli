@@ -17,26 +17,43 @@ export const subjectDetails = (page, sbj) => __awaiter(void 0, void 0, void 0, f
     const elements = yield page.$$('.submit_masala');
     const names = yield Promise.all(elements.map((x, i) => __awaiter(void 0, void 0, void 0, function* () {
         const selector = sbjString('name', ++i);
-        return yield page.evaluate((sbjSelector, type) => {
-            var _a, _b;
-            return type !== 'percentage'
-                ? ((_a = document.querySelector(sbjSelector)) === null || _a === void 0 ? void 0 : _a.textContent) || ''
-                : ((_b = document.querySelector(sbjSelector)) === null || _b === void 0 ? void 0 : _b.value) || '';
+        const out = yield page.evaluate((sbjSelector, type) => {
+            var _a;
+            return (_a = document.querySelector(sbjSelector)) === null || _a === void 0 ? void 0 : _a.textContent;
         }, selector, 'name');
+        return out;
     })));
     const index = names.indexOf(sbj);
     elements[index * 2].click();
     yield page.waitForNetworkIdle();
-    const rows = yield page.$$eval('td', (rows) => {
-        return rows.map((row) => row.textContent);
+    const rows = yield page.evaluate(() => {
+        const rows = Array.from(document.querySelectorAll('td'));
+        return rows.map((x) => x.textContent);
     });
+    const reds = yield page.evaluate(() => {
+        const rows = Array.from(document.querySelectorAll('td'));
+        return rows.map((x) => x.style.color);
+    });
+    let mainReds = [];
     let mainRows = [];
     for (let i = 0; i < rows.length; i += 4) {
         mainRows.push(rows.slice(i, i + 4));
+        mainReds.push(reds.slice(i, i + 4));
     }
     const bottomRows = mainRows.slice(mainRows.length - 3);
+    const buffer = mainReds.slice(mainReds.length - 3);
+    const bottomReds = [
+        buffer[0][1],
+        buffer[0][3],
+        buffer[1][1],
+        buffer[1][3],
+        buffer[1][1],
+    ].map((x) => (x === 'red' ? 1 : 0));
     mainRows.splice(-3);
+    mainReds.splice(-3);
     const maxLengthArr = new Array(mainRows[0].length).fill(0);
+    const topReds = mainReds.map((x) => (x.includes('red') ? 1 : 0));
+    console.log('bottomRows: ', bottomRows);
     [...mainRows, ['Exam Date', 'Exam', 'Max Score', 'Score']].forEach((row) => {
         row.forEach((value, index) => {
             maxLengthArr[index] = Math.max(maxLengthArr[index] || 0, value.toString().length);
@@ -63,7 +80,7 @@ export const subjectDetails = (page, sbj) => __awaiter(void 0, void 0, void 0, f
             }
         });
     });
-    subjectOutput(mainRows, maxLengthArr, better, bottomRowsMaxLengthArr).forEach((x) => {
+    subjectOutput(mainRows, maxLengthArr, better, bottomRowsMaxLengthArr, topReds, bottomReds).forEach((x) => {
         console.log(x);
     });
 });
