@@ -7,7 +7,7 @@ const stringFunc = (text, maxLength) => {
     buffer.push(...Array(spacesAfter).fill(' '));
     return buffer.join('');
 };
-export const subjectOutput = (rowsArr, maxLengthArr, bottomRows, bottomRowsMaxLengthArr, topReds, bottomReds) => {
+export const subjectOutput = (rowsArr, maxLengthArr, bottomRows, bottomRowsMaxLengthArr, topReds, bottomReds, topGreens, bottomGreens) => {
     let prettyArr = [];
     const headerArr = ['Exam Date', 'Exam', 'Max Score', 'Score'];
     const first_buffer = (maxLengthArr) => [
@@ -25,20 +25,32 @@ export const subjectOutput = (rowsArr, maxLengthArr, bottomRows, bottomRowsMaxLe
         ...maxLengthArr.map((x, i) => `${Array(x).fill('─').join('')}${i === maxLengthArr.length - 1 ? '' : '┴'}`),
         '┘',
     ];
-    const infoPart = (maxLengthArr, dataArr, reds) => dataArr.map((x, _) => {
+    const infoPart = (maxLengthArr, dataArr, reds, greens) => dataArr.map((x, _) => {
         return [
             '│',
             ...maxLengthArr.map((x, i) => {
                 if (dataArr[_].length === i + 1) {
-                    if (reds[_] === 1) {
-                        return `${chalk.red(stringFunc(dataArr[_][i], x))}${i === maxLengthArr.length - 1 ? '' : '│'}`;
+                    const value = stringFunc(dataArr[_][i], x);
+                    if (reds[_] === 1 && greens[_] === 1) {
+                        // Apply both red text and green background
+                        return chalk.bold.bgGreen.red(`${value}${i === maxLengthArr.length - 1 ? '' : '│'}`);
+                    }
+                    else if (reds[_] === 1) {
+                        // Apply red text
+                        return chalk.bold.red(`${value}${i === maxLengthArr.length - 1 ? '' : '│'}`);
+                    }
+                    else if (greens[_] === 1) {
+                        // Apply green background
+                        return chalk.bold.bgGreen.black(`${value}${i === maxLengthArr.length - 1 ? '' : '│'}`);
                     }
                     else {
-                        return `${stringFunc(dataArr[_][i], x)}${i === maxLengthArr.length - 1 ? '' : '│'}`;
+                        // No styling
+                        return `${value}${i === maxLengthArr.length - 1 ? '' : '│'}`;
                     }
                 }
-                else
+                else {
                     return `${stringFunc(dataArr[_][i], x)}${i === maxLengthArr.length - 1 ? '' : '│'}`;
+                }
             }),
             '│',
         ];
@@ -52,7 +64,7 @@ export const subjectOutput = (rowsArr, maxLengthArr, bottomRows, bottomRowsMaxLe
     prettyArr.push(prettierHeaderArr.join(''));
     prettyArr.push(middlePart(maxLengthArr).join(''));
     rowsArr.forEach((_, __) => {
-        prettyArr.push(infoPart(maxLengthArr, rowsArr, topReds)[__].join(''));
+        prettyArr.push(infoPart(maxLengthArr, rowsArr, topReds, topGreens)[__].join(''));
         __ !== rowsArr.length - 1
             ? prettyArr.push(middlePart(maxLengthArr).join(''))
             : null;
@@ -60,7 +72,7 @@ export const subjectOutput = (rowsArr, maxLengthArr, bottomRows, bottomRowsMaxLe
     prettyArr.push(bottom_buffer(maxLengthArr).join(''));
     prettyArr.push(first_buffer(bottomRowsMaxLengthArr).join(''));
     bottomRows.forEach((_, __) => {
-        prettyArr.push(infoPart(bottomRowsMaxLengthArr, bottomRows, bottomReds)[__].join(''));
+        prettyArr.push(infoPart(bottomRowsMaxLengthArr, bottomRows, bottomReds, bottomGreens)[__].join(''));
         __ !== bottomRows.length - 1
             ? prettyArr.push(middlePart(bottomRowsMaxLengthArr).join(''))
             : prettyArr.push(bottom_buffer(bottomRowsMaxLengthArr).join(''));

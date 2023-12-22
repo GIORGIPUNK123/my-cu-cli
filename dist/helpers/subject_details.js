@@ -34,26 +34,41 @@ export const subjectDetails = (page, sbj) => __awaiter(void 0, void 0, void 0, f
         const rows = Array.from(document.querySelectorAll('td'));
         return rows.map((x) => x.style.color);
     });
+    const greens = yield page.evaluate(() => {
+        const rows = Array.from(document.querySelectorAll('td'));
+        return rows.map((x) => x.style.backgroundColor);
+    });
     let mainReds = [];
     let mainRows = [];
+    let mainGreens = [];
     for (let i = 0; i < rows.length; i += 4) {
         mainRows.push(rows.slice(i, i + 4));
         mainReds.push(reds.slice(i, i + 4));
+        mainGreens.push(greens.slice(i, i + 4));
     }
     const bottomRows = mainRows.slice(mainRows.length - 3);
-    const buffer = mainReds.slice(mainReds.length - 3);
+    const bufferReds = mainReds.slice(mainReds.length - 3);
+    const bufferGreens = mainGreens.slice(mainGreens.length - 3);
     const bottomReds = [
-        buffer[0][1],
-        buffer[0][3],
-        buffer[1][1],
-        buffer[1][3],
-        buffer[1][1],
+        bufferReds[0][1],
+        bufferReds[0][3],
+        bufferReds[1][1],
+        bufferReds[1][3],
+        bufferReds[1][1],
     ].map((x) => (x === 'red' ? 1 : 0));
+    const bottomGreens = [
+        bufferGreens[0][1],
+        bufferGreens[0][3],
+        bufferGreens[1][1],
+        bufferGreens[1][3],
+        bufferGreens[1][1],
+    ].map((x) => (x !== '' ? 0 : 1));
     mainRows.splice(-3);
     mainReds.splice(-3);
+    mainGreens.splice(-3);
     const maxLengthArr = new Array(mainRows[0].length).fill(0);
     const topReds = mainReds.map((x) => (x.includes('red') ? 1 : 0));
-    console.log('bottomRows: ', bottomRows);
+    const topGreens = mainGreens.map((x) => x.includes('rgb(189, 255, 206)') ? 1 : 0);
     [...mainRows, ['Exam Date', 'Exam', 'Max Score', 'Score']].forEach((row) => {
         row.forEach((value, index) => {
             maxLengthArr[index] = Math.max(maxLengthArr[index] || 0, value.toString().length);
@@ -80,7 +95,7 @@ export const subjectDetails = (page, sbj) => __awaiter(void 0, void 0, void 0, f
             }
         });
     });
-    subjectOutput(mainRows, maxLengthArr, better, bottomRowsMaxLengthArr, topReds, bottomReds).forEach((x) => {
+    subjectOutput(mainRows, maxLengthArr, better, bottomRowsMaxLengthArr, topReds, bottomReds, topGreens, bottomGreens).forEach((x) => {
         console.log(x);
     });
 });
