@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { getColumnContent } from './basic_helper.js';
+import { getColumnContent } from './basic_helper.ts';
 
 export const availableSubjects = async (page: Page) => {
   let names: string[] = [];

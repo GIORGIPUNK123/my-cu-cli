@@ -7,8 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { sbjString } from './basic_helper.js';
-import { subjectOutput } from './subjectOutput.js';
+import { sbjString } from "./basic_helper.js";
+import { subjectOutput } from "./subjectOutput.js";
 export const subjectDetails = (page, sbj) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('sbj: ', sbj);
     // Find all <td> elements in the document

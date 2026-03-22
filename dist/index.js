@@ -9,45 +9,72 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { program } from 'commander';
-import { mainFunc } from './main.js';
+import { mainFunc } from "./main.js";
 import select from '@inquirer/select';
 import { input } from '@inquirer/prompts';
-import { availableSubjects } from './helpers/check_data.js';
+import { availableSubjects } from "./helpers/check_data.js";
 import puppeteer from 'puppeteer';
-import { login } from './helpers/login_helper.js';
+import { login } from "./helpers/login_helper.js";
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    const browser = yield puppeteer.launch({ headless: 'new' });
-    const page = yield browser.newPage();
     program.version('1.0.0').description('Check My Cu From CLI ');
     program
         .command('info') // Use 'info' as the command name
         .description('Get Latest Info From My Cu')
         .action(() => __awaiter(void 0, void 0, void 0, function* () {
-        const pirn = yield input({ message: 'Enter your ID NUMBER' });
-        yield login(page, pirn);
-        yield page.waitForNetworkIdle();
-        yield page.goto('https://programs.cu.edu.ge/students/gpa.php');
-        yield availableSubjects(page);
-        const answer = yield select({
-            message: 'Select',
-            choices: [
-                {
-                    name: 'basic',
-                    value: 'basic',
-                    description: 'Get basic info about your gpa and grades',
-                },
-                ...(yield (() => __awaiter(void 0, void 0, void 0, function* () {
-                    const subjects = yield availableSubjects(page);
-                    return subjects.map((x) => ({
-                        name: x,
-                        value: x,
-                        description: 'Find more about this subject',
-                    }));
-                }))()),
-            ],
-        });
-        yield mainFunc(page, browser, pirn, answer);
-        // await browser.close();
+        const browser = yield puppeteer.launch({ headless: true });
+        const page = yield browser.newPage();
+        try {
+            const year = yield select({
+                message: 'Select Year',
+                choices: [
+                    {
+                        name: 'First Year',
+                        value: 'first',
+                        description: 'First Year',
+                    },
+                    {
+                        name: 'Upper Years',
+                        value: 'upper',
+                        description: 'Upper Years',
+                    },
+                ],
+            });
+            if (year === 'first') {
+                const pirn = yield input({ message: 'Enter your ID Number' });
+                yield login(page, pirn);
+            }
+            else {
+                const username = yield input({ message: 'Enter your USERNAME' });
+                const pass = yield input({ message: 'Enter your PASSWORD' });
+                yield login(page, username, pass);
+            }
+            yield page.waitForNetworkIdle();
+            yield page.goto('https://programs.cu.edu.ge/students/gpa.php');
+            yield availableSubjects(page);
+            const answer = yield select({
+                message: 'Select',
+                choices: [
+                    {
+                        name: 'basic',
+                        value: 'basic',
+                        description: 'Get basic info about your gpa and grades',
+                    },
+                    ...(yield (() => __awaiter(void 0, void 0, void 0, function* () {
+                        const subjects = yield availableSubjects(page);
+                        return subjects.map((x) => ({
+                            name: x,
+                            value: x,
+                            description: 'Find more about this subject',
+                        }));
+                    }))()),
+                ],
+            });
+            yield mainFunc(page, browser, answer);
+        }
+        catch (error) {
+            console.error('Error:', error);
+            yield browser.close();
+        }
     }));
     yield program.parseAsync(process.argv);
 }))();

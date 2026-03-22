@@ -1,6 +1,6 @@
 import { Page } from 'puppeteer';
-import { sbjString } from './basic_helper.js';
-import { subjectOutput } from './subjectOutput.js';
+import { sbjString } from './basic_helper.ts';
+import { subjectOutput } from './subjectOutput.ts';
 
 export const subjectDetails = async (page: Page, sbj: string) => {
   console.log('sbj: ', sbj);
@@ -17,10 +17,10 @@ export const subjectDetails = async (page: Page, sbj: string) => {
           return document.querySelector(sbjSelector)?.textContent;
         },
         selector,
-        'name'
+        'name',
       );
       return out;
-    })
+    }),
   );
   const index = names.indexOf(sbj);
   elements[index * 2].click();
@@ -71,14 +71,14 @@ export const subjectDetails = async (page: Page, sbj: string) => {
 
   const topReds: number[] = mainReds.map((x) => (x.includes('red') ? 1 : 0));
   const topGreens: number[] = mainGreens.map((x) =>
-    x.includes('rgb(189, 255, 206)') ? 1 : 0
+    x.includes('rgb(189, 255, 206)') ? 1 : 0,
   );
 
   [...mainRows, ['Exam Date', 'Exam', 'Max Score', 'Score']].forEach((row) => {
     row.forEach((value, index) => {
       maxLengthArr[index] = Math.max(
         maxLengthArr[index] || 0,
-        value.toString().length
+        value.toString().length,
       );
     });
   });
@@ -102,7 +102,7 @@ export const subjectDetails = async (page: Page, sbj: string) => {
       if (bottomRowsMaxLengthArr[index] !== undefined) {
         bottomRowsMaxLengthArr[index] = Math.max(
           bottomRowsMaxLengthArr[index],
-          value.toString().length
+          value.toString().length,
         );
       }
     });
@@ -115,7 +115,7 @@ export const subjectDetails = async (page: Page, sbj: string) => {
     topReds,
     bottomReds,
     topGreens,
-    bottomGreens
+    bottomGreens,
   ).forEach((x) => {
     console.log(x);
   });

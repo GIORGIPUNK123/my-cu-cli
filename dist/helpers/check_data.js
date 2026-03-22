@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { getColumnContent } from './basic_helper.js';
+import { getColumnContent } from "./basic_helper.js";
 export const availableSubjects = (page) => __awaiter(void 0, void 0, void 0, function* () {
     let names = [];
     for (let i = 1; i < 7; i++) {

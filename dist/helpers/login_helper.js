@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export const login = (page, pirn) => __awaiter(void 0, void 0, void 0, function* () {
+export const login = (page, name, password) => __awaiter(void 0, void 0, void 0, function* () {
     yield page.goto('https://programs.cu.edu.ge/cu/loginStud');
     yield Promise.all([
         page.waitForSelector('button[name="submit"]'),
@@ -15,11 +15,20 @@ export const login = (page, pirn) => __awaiter(void 0, void 0, void 0, function*
         page.waitForSelector('input[name="username"]'),
         page.waitForSelector('input[name="password"]'),
     ]);
-    const myPirn = pirn.split('');
-    yield page.type('input[name="pirn"]', myPirn.slice(0, -1));
-    yield page.waitForNetworkIdle();
-    yield page.type('input[name="pirn"]', myPirn.slice(-1));
-    yield page.type('input[name="password"]', myPirn);
-    yield page.waitForNetworkIdle();
+    if (password) {
+        const myName = name.split('');
+        const myPassword = password.split('');
+        yield page.type('input[name="username"]', myName);
+        yield page.waitForNetworkIdle();
+        yield page.type('input[name="password"]', myPassword);
+        yield page.waitForNetworkIdle();
+    }
+    else {
+        const myName = name.split('');
+        yield page.type('input[name="pirn"]', myName.slice(0, -1));
+        yield page.waitForNetworkIdle();
+        yield page.type('input[name="pirn"]', myName.slice(-1));
+        yield page.waitForNetworkIdle();
+    }
     yield page.click('button[name=submit]');
 });
