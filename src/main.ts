@@ -1,6 +1,5 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { getBasic } from './helpers/basic_helper.ts';
-import { login } from './helpers/login_helper.ts';
 import { subjectDetails } from './helpers/subject_details.ts';
 
 export const mainFunc = async (
@@ -14,7 +13,5 @@ export const mainFunc = async (
   } catch (error) {
     console.error('An error occurred:', error);
     throw error;
-  } finally {
-    await browser.close();
   }
 };

@@ -3,7 +3,7 @@ import { program } from 'commander';
 import { mainFunc } from './main.ts';
 import select, { Separator } from '@inquirer/select';
 import { input } from '@inquirer/prompts';
-import { availableSubjects } from './helpers/check_data.ts';
+import { getWholeTable } from './helpers/basic_helper.ts';
 import puppeteer from 'puppeteer';
 import { login } from './helpers/login_helper.ts';
 
@@ -42,28 +42,49 @@ import { login } from './helpers/login_helper.ts';
         }
         await page.waitForNetworkIdle();
         await page.goto('https://programs.cu.edu.ge/students/gpa.php');
-        await availableSubjects(page);
-        const answer = await select({
-          message: 'Select',
-          choices: [
-            {
-              name: 'basic',
-              value: 'basic',
-              description: 'Get basic info about your gpa and grades',
-            },
-            ...(await (async () => {
-              const subjects = await availableSubjects(page);
-              return subjects.map((x) => ({
-                name: x,
-                value: x,
+
+        const gpaUrl = 'https://programs.cu.edu.ge/students/gpa.php';
+
+        // Infinite loop for menu selection
+        let shouldExit = false;
+        while (!shouldExit) {
+          // Always return to GPA page before showing choices.
+          // Subject details may navigate away from this page.
+          await page.goto(gpaUrl, { waitUntil: 'networkidle0' });
+
+          const subjects = await getWholeTable(page);
+          const answer = await select({
+            message: 'Select',
+            choices: [
+              {
+                name: 'basic',
+                value: 'basic',
+                description: 'Get basic info about your gpa and grades',
+              },
+              ...subjects.map((x, idx) => ({
+                name: `${x.code} | ${x.name}`,
+                value: `subject::${idx}::${x.code}`,
                 description: 'Find more about this subject',
-              }));
-            })()),
-          ],
-        });
-        await mainFunc(page, browser, answer);
+              })),
+              new Separator(),
+              {
+                name: 'Exit',
+                value: 'exit',
+                description: 'Exit the application',
+              },
+            ],
+          });
+
+          if (answer === 'exit') {
+            shouldExit = true;
+            console.log('Goodbye!');
+          } else {
+            await mainFunc(page, browser, answer);
+          }
+        }
       } catch (error) {
         console.error('Error:', error);
+      } finally {
         await browser.close();
       }
     });

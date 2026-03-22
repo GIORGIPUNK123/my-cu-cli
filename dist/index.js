@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { program } from 'commander';
 import { mainFunc } from "./main.js";
-import select from '@inquirer/select';
+import select, { Separator } from '@inquirer/select';
 import { input } from '@inquirer/prompts';
-import { availableSubjects } from "./helpers/check_data.js";
+import { getWholeTable } from "./helpers/basic_helper.js";
 import puppeteer from 'puppeteer';
 import { login } from "./helpers/login_helper.js";
 (() => __awaiter(void 0, void 0, void 0, function* () {
@@ -50,29 +50,48 @@ import { login } from "./helpers/login_helper.js";
             }
             yield page.waitForNetworkIdle();
             yield page.goto('https://programs.cu.edu.ge/students/gpa.php');
-            yield availableSubjects(page);
-            const answer = yield select({
-                message: 'Select',
-                choices: [
-                    {
-                        name: 'basic',
-                        value: 'basic',
-                        description: 'Get basic info about your gpa and grades',
-                    },
-                    ...(yield (() => __awaiter(void 0, void 0, void 0, function* () {
-                        const subjects = yield availableSubjects(page);
-                        return subjects.map((x) => ({
-                            name: x,
-                            value: x,
+            const gpaUrl = 'https://programs.cu.edu.ge/students/gpa.php';
+            // Infinite loop for menu selection
+            let shouldExit = false;
+            while (!shouldExit) {
+                // Always return to GPA page before showing choices.
+                // Subject details may navigate away from this page.
+                yield page.goto(gpaUrl, { waitUntil: 'networkidle0' });
+                const subjects = yield getWholeTable(page);
+                const answer = yield select({
+                    message: 'Select',
+                    choices: [
+                        {
+                            name: 'basic',
+                            value: 'basic',
+                            description: 'Get basic info about your gpa and grades',
+                        },
+                        ...subjects.map((x, idx) => ({
+                            name: `${x.code} | ${x.name}`,
+                            value: `subject::${idx}::${x.code}`,
                             description: 'Find more about this subject',
-                        }));
-                    }))()),
-                ],
-            });
-            yield mainFunc(page, browser, answer);
+                        })),
+                        new Separator(),
+                        {
+                            name: 'Exit',
+                            value: 'exit',
+                            description: 'Exit the application',
+                        },
+                    ],
+                });
+                if (answer === 'exit') {
+                    shouldExit = true;
+                    console.log('Goodbye!');
+                }
+                else {
+                    yield mainFunc(page, browser, answer);
+                }
+            }
         }
         catch (error) {
             console.error('Error:', error);
+        }
+        finally {
             yield browser.close();
         }
     }));

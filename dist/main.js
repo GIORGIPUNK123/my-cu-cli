@@ -18,7 +18,4 @@ export const mainFunc = (page, browser, type) => __awaiter(void 0, void 0, void 
         console.error('An error occurred:', error);
         throw error;
     }
-    finally {
-        yield browser.close();
-    }
 });

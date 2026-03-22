@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import { Page } from 'puppeteer';
 
 const stringFunc = (text: string, maxLength: number): string => {
   const spacesBefore = Math.max(0, Math.floor((maxLength - text.length) / 2));
@@ -18,7 +17,7 @@ export const subjectOutput = (
   topReds: number[],
   bottomReds: number[],
   topGreens: number[],
-  bottomGreens: number[]
+  bottomGreens: number[],
 ) => {
   let prettyArr: string[] = [];
   const headerArr = ['Exam Date', 'Exam', 'Max Score', 'Score'];
@@ -28,7 +27,7 @@ export const subjectOutput = (
       (x, i) =>
         `${Array(x).fill('─').join('')}${
           i === maxLengthArr.length - 1 ? '' : '┬'
-        }`
+        }`,
     ),
     '┐',
   ];
@@ -38,7 +37,7 @@ export const subjectOutput = (
       (x, i) =>
         `${stringFunc(headerArr[i], x)}${
           i === maxLengthArr.length - 1 ? '' : '│'
-        }`
+        }`,
     ),
     '│',
   ];
@@ -48,7 +47,7 @@ export const subjectOutput = (
       (x, i) =>
         `${Array(x).fill('─').join('')}${
           i === maxLengthArr.length - 1 ? '' : '┴'
-        }`
+        }`,
     ),
     '┘',
   ];
@@ -56,7 +55,7 @@ export const subjectOutput = (
     maxLengthArr: number[],
     dataArr: string[][],
     reds: number[],
-    greens: number[]
+    greens: number[],
   ) =>
     dataArr.map((x, _) => {
       return [
@@ -68,17 +67,17 @@ export const subjectOutput = (
             if (reds[_] === 1 && greens[_] === 1) {
               // Apply both red text and green background
               return chalk.bold.bgGreen.red(
-                `${value}${i === maxLengthArr.length - 1 ? '' : '│'}`
+                `${value}${i === maxLengthArr.length - 1 ? '' : '│'}`,
               );
             } else if (reds[_] === 1) {
               // Apply red text
               return chalk.bold.red(
-                `${value}${i === maxLengthArr.length - 1 ? '' : '│'}`
+                `${value}${i === maxLengthArr.length - 1 ? '' : '│'}`,
               );
             } else if (greens[_] === 1) {
               // Apply green background
               return chalk.bold.bgGreen.black(
-                `${value}${i === maxLengthArr.length - 1 ? '' : '│'}`
+                `${value}${i === maxLengthArr.length - 1 ? '' : '│'}`,
               );
             } else {
               // No styling
@@ -99,7 +98,7 @@ export const subjectOutput = (
       (x, i) =>
         `${Array(x).fill('─').join('')}${
           i === maxLengthArr.length - 1 ? '' : '┼'
-        }`
+        }`,
     ),
     '┤',
   ];
@@ -108,7 +107,7 @@ export const subjectOutput = (
   prettyArr.push(middlePart(maxLengthArr).join(''));
   rowsArr.forEach((_, __) => {
     prettyArr.push(
-      infoPart(maxLengthArr, rowsArr, topReds, topGreens)[__].join('')
+      infoPart(maxLengthArr, rowsArr, topReds, topGreens)[__].join(''),
     );
     __ !== rowsArr.length - 1
       ? prettyArr.push(middlePart(maxLengthArr).join(''))
@@ -122,7 +121,7 @@ export const subjectOutput = (
     prettyArr.push(
       infoPart(bottomRowsMaxLengthArr, bottomRows, bottomReds, bottomGreens)[
         __
-      ].join('')
+      ].join(''),
     );
     __ !== bottomRows.length - 1
       ? prettyArr.push(middlePart(bottomRowsMaxLengthArr).join(''))
