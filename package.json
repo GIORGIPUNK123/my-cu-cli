@@ -16,7 +16,7 @@
     "start": "node ./dist/index.js info",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node ./src/index.ts info",
-    "build": "rm -rf dist && tsc"
+    "build": "tsc"
   },
   "author": "Giorgi Charashvili",
   "license": "MIT",

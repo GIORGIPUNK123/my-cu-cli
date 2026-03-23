@@ -9,10 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { getBasic } from "./helpers/basic_helper.js";
 import { subjectDetails } from "./helpers/subject_details.js";
+import { schedule } from "./helpers/schedule.js";
 export const mainFunc = (page, browser, type) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield page.setViewport({ width: 1080, height: 1024 });
-        type === 'basic' ? yield getBasic(page) : yield subjectDetails(page, type);
+        switch (type) {
+            case 'basic':
+                yield getBasic(page);
+                break;
+            case 'schedule':
+                yield schedule(page);
+                break;
+            default:
+                yield subjectDetails(page, type);
+                break;
+        }
     }
     catch (error) {
         console.error('An error occurred:', error);

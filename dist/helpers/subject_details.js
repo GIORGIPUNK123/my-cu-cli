@@ -136,7 +136,7 @@ export const subjectDetails = (page, subjectKey) => __awaiter(void 0, void 0, vo
             });
         });
         const better = [
-            ['Interim Results - Total', bottomRows[0][1]],
+            ['Interm Results - Total', bottomRows[0][1]],
             ['Maximum points of the exams entered', bottomRows[0][3]],
             ['Total points earned by the student', bottomRows[1][1]],
             [

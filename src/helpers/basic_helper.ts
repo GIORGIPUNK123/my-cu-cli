@@ -40,9 +40,9 @@ const calculateGpa = async (page: Page) => {
   // return wgpaValue;
 };
 
-const outputBuilder = (
+export const outputBuilder = (
   data: { name: string; arr: string[]; maxLength: number }[],
-  gpa: { name: string; first: string; second: string }[],
+  gpa?: { name: string; first: string; second: string }[],
 ) => {
   let headerArr: string[] = [];
   let rowsArr: string[][] = [];
@@ -167,7 +167,7 @@ const outputBuilder = (
   });
 
   // Format GPA table
-  if (gpa.length > 0) {
+  if (gpa && gpa.length > 0) {
     console.log('\n'); // Add spacing
     const gpaHeaderArr = ['Name', 'First', 'Second'];
     const gpaRowsArr = gpa.map((item) => [item.name, item.first, item.second]);
@@ -367,78 +367,35 @@ export const getAvailableSubjects = async (page: Page): Promise<string[]> => {
 };
 
 export const availableSubjects = getAvailableSubjects;
-
+export const getMaximumLength = (arr: string[]): number => {
+  return arr.reduce((maxLength, item) => {
+    return Math.max(maxLength, item.length);
+  }, 0);
+};
 export const getBasic = async (
   page: Page,
 ): Promise<{ name: string; arr: string[] }[]> => {
   const tableData = await getWholeTable(page);
-  let yearsContentArr: string[] = [];
-  let codesContentArr: string[] = [];
-  let namesContentArr: string[] = [];
-  let creditsContentArr: string[] = [];
-  let percentagesContentArr: string[] = [];
-  let marksContentArr: string[] = [];
+  const columnConfig: Array<{
+    name: string;
+    key: 'year' | 'code' | 'name' | 'credit' | 'percentage' | 'mark';
+  }> = [
+    { name: 'years', key: 'year' },
+    { name: 'codes', key: 'code' },
+    { name: 'names', key: 'name' },
+    { name: 'credits', key: 'credit' },
+    { name: 'percentages', key: 'percentage' },
+    { name: 'marks', key: 'mark' },
+  ];
 
-  tableData.forEach((row) => {
-    yearsContentArr.push(row.year);
-    codesContentArr.push(row.code);
-    namesContentArr.push(row.name);
-    creditsContentArr.push(row.credit);
-    percentagesContentArr.push(row.percentage);
-    marksContentArr.push(row.mark);
-  });
-
-  const checkArrayContent = (arr: string[]): number => {
-    return arr.reduce((maxLength, item) => {
-      return Math.max(maxLength, item.length);
-    }, 0);
-  };
-
-  const yearsLongest = checkArrayContent(yearsContentArr);
-  const codesLongest = checkArrayContent(codesContentArr);
-  const namesLongest = checkArrayContent(namesContentArr);
-  const creditsLongest = checkArrayContent(creditsContentArr);
-  const percentagesLongest = checkArrayContent(percentagesContentArr);
-  const marksLongest = checkArrayContent(marksContentArr);
-  const finishedArr = [
-    {
-      name: 'years',
-      arr: yearsContentArr,
-      maxLength: 'years'.length < yearsLongest ? yearsLongest : 'years'.length,
-    },
-    {
-      name: 'codes',
-      arr: codesContentArr,
-      maxLength: 'codes'.length < codesLongest ? codesLongest : 'codes'.length,
-    },
-    {
-      name: 'names',
-      arr: namesContentArr,
-      maxLength: 'names'.length < namesLongest ? namesLongest : 'names'.length,
-    },
-    {
-      name: 'credits',
-      arr: creditsContentArr,
-      maxLength:
-        'names'.length < creditsLongest ? creditsLongest : 'credits'.length,
-    },
-    {
-      name: 'percentages',
-      arr: percentagesContentArr,
-      maxLength:
-        'percentages'.length < percentagesLongest
-          ? percentagesLongest
-          : 'percentages'.length,
-    },
-    {
-      name: 'marks',
-      arr: marksContentArr,
-      maxLength: 'marks'.length < marksLongest ? marksLongest : 'marks'.length,
-    },
-  ].map((x) => {
-    return x;
+  const finishedArr = columnConfig.map(({ name, key }) => {
+    const arr = tableData.map((row) => row[key]);
+    return {
+      name,
+      arr,
+      maxLength: Math.max(name.length, getMaximumLength(arr)),
+    };
   });
   outputBuilder(finishedArr, await calculateGpa(page));
-  // console.log(Array(longestLength).fill('-').join(''));
   return finishedArr;
 };

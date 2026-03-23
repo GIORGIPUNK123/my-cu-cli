@@ -21,7 +21,7 @@ import { login } from "./helpers/login_helper.js";
         .command('info') // Use 'info' as the command name
         .description('Get Latest Info From My Cu')
         .action(() => __awaiter(void 0, void 0, void 0, function* () {
-        const browser = yield puppeteer.launch({ headless: true });
+        const browser = yield puppeteer.launch({ headless: false });
         const page = yield browser.newPage();
         try {
             const year = yield select({
@@ -65,6 +65,11 @@ import { login } from "./helpers/login_helper.js";
                             name: 'basic',
                             value: 'basic',
                             description: 'Get basic info about your gpa and grades',
+                        },
+                        {
+                            name: 'schedule',
+                            value: 'schedule',
+                            description: 'Get your schedule',
                         },
                         ...subjects.map((x, idx) => ({
                             name: `${x.code} | ${x.name}`,
