@@ -1,10 +1,51 @@
-This is a node js cli app made for my-cu platform you can basically get info about your marks from terminal without struggle
+my-cu-cli
 
-it is using pupeeter for scraping commander for cli stuff and inquirer for cli options
+CLI app for my-cu platform to check student information from terminal.
 
-install it by running
+Tech stack:
 
-git clone https://github.com/GIORGIPUNK123/my-cu-cli
-cd my-cu-cli
-npm i
-npm link
+- TypeScript
+- Commander (CLI commands)
+- Inquirer (interactive prompts)
+- Puppeteer (automation/scraping)
+
+Client installation (Windows, macOS, Linux)
+
+Recommended (published package):
+
+1. Install Node.js 20+
+2. Install globally:
+   npm install -g uni
+3. Run the command from anywhere:
+   my-cu info
+
+Update command for clients:
+npm update -g uni
+
+Developer workflow (local source)
+
+1. Clone repository:
+   git clone https://github.com/GIORGIPUNK123/my-cu-cli
+   cd my-cu-cli
+2. Install dependencies:
+   npm install
+3. Build:
+   npm run build
+4. Link local CLI:
+   npm link
+5. Run:
+   my-cu info
+
+Release process
+
+1. Bump version:
+   npm version patch
+2. Push commit and tag:
+   git push --follow-tags
+3. GitHub Actions workflow at .github/workflows/release.yml:
+   - builds on ubuntu, macos, windows
+   - publishes to npm on tags starting with v
+
+Required repository secret
+
+- NPM_TOKEN (npm automation token)
