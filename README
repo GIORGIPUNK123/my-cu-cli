@@ -1,51 +1,88 @@
-my-cu-cli
+# my-cu-cli
 
-CLI app for my-cu platform to check student information from terminal.
+CLI app for the My CU platform to check student information directly from the terminal.
 
-Tech stack:
+## Features
+
+- Interactive CLI experience with prompts and menus
+- Quick access to GPA and subject-related information
+- Works on Windows, macOS, and Linux
+
+## Tech Stack
 
 - TypeScript
-- Commander (CLI commands)
+- Commander (CLI command framework)
 - Inquirer (interactive prompts)
-- Puppeteer (automation/scraping)
+- Puppeteer (web automation)
 
-Client installation (Windows, macOS, Linux)
+## Requirements
 
-Recommended (published package):
+- Node.js 20+
 
-1. Install Node.js 20+
-2. Install globally:
-   npm install -g my-cu-cli
-3. Run the command from anywhere:
-   my-cu info
+## Install (Client Usage)
 
-Update command for clients:
+Install globally:
+
+```bash
+npm install -g my-cu-cli
+```
+
+Run from anywhere:
+
+```bash
+my-cu info
+```
+
+Update to latest version:
+
+```bash
 npm update -g my-cu-cli
+```
 
-Developer workflow (local source)
+## Local Development
 
-1. Clone repository:
-   git clone https://github.com/GIORGIPUNK123/my-cu-cli
-   cd my-cu-cli
-2. Install dependencies:
-   npm install
-3. Build:
-   npm run build
-4. Link local CLI:
-   npm link
-5. Run:
-   my-cu info
+```bash
+git clone https://github.com/GIORGIPUNK123/my-cu-cli
+cd my-cu-cli
+npm install
+npm run build
+npm link
+my-cu info
+```
 
-Release process
+## Release Process
 
-1. Bump version:
-   npm version patch
-2. Push commit and tag:
-   git push --follow-tags
-3. GitHub Actions workflow at .github/workflows/release.yml:
-   - builds on ubuntu, macos, windows
-   - publishes to npm on tags starting with v
+1. Apply your code changes and commit.
+2. Bump version:
 
-Required repository secret
+```bash
+npm version patch
+```
 
-- NPM_TOKEN (npm automation token)
+3. Push commit and tags:
+
+```bash
+git push --follow-tags
+```
+
+This triggers the GitHub Actions release workflow, which:
+
+- Builds on Ubuntu, macOS, and Windows
+- Publishes to npm for tags starting with `v`
+
+## Required GitHub Secret
+
+- `NPM_TOKEN` (npm automation token with publish permission)
+
+## Troubleshooting
+
+If install fails with npm 404, the package version may not be published yet. Check:
+
+```bash
+npm view my-cu-cli
+```
+
+If publish fails with 403 and 2FA required, use:
+
+- Local publish with OTP, or
+- GitHub Actions with an npm automation token in `NPM_TOKEN`
