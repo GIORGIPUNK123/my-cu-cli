@@ -70,9 +70,13 @@ This triggers the GitHub Actions release workflow, which:
 - Builds on Ubuntu, macOS, and Windows
 - Publishes to npm for tags starting with `v`
 
-## Required GitHub Secret
+## Trusted Publishing Setup (Recommended)
 
-- `NPM_TOKEN` (npm automation token with publish permission)
+Use npm Trusted Publishing with GitHub Actions (OIDC) for secure CI publishing without OTP.
+
+1. In npm package settings, enable Trusted Publishing for this GitHub repository/workflow.
+2. Keep the workflow permission `id-token: write`.
+3. No `NPM_TOKEN` secret is required when Trusted Publishing is configured correctly.
 
 ## Troubleshooting
 
@@ -82,7 +86,7 @@ If install fails with npm 404, the package version may not be published yet. Che
 npm view my-cu-cli
 ```
 
-If publish fails with 403 and 2FA required, use:
+If publish fails with EOTP in GitHub Actions, Trusted Publishing is not fully configured yet.
 
-- Local publish with OTP, or
-- GitHub Actions with an npm automation token in `NPM_TOKEN`
+- Verify trusted publisher is linked to the same repository and workflow.
+- Ensure release runs from tag push in this repository (not from a fork).
