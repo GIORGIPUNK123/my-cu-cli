@@ -8,7 +8,7 @@ import puppeteer from 'puppeteer';
 import { login } from './helpers/login_helper.ts';
 
 (async () => {
-  program.version('1.0.4').description('Check My Cu From CLI ');
+  program.version('1.0.5').description('Check My Cu From CLI ');
   program
     .command('info') // Use 'info' as the command name
     .description('Get Latest Info From My Cu')
