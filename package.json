@@ -1,6 +1,6 @@
 {
   "name": "my-cu-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "CLI for checking CU student information from terminal",
   "main": "dist/index.js",
   "type": "module",
