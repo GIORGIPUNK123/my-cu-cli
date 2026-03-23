@@ -16,7 +16,7 @@
   "author": "Giorgi Charashvili",
   "license": "MIT",
   "bin": {
-    "my-cu": "./dist/index.js"
+    "my-cu": "dist/index.js"
   },
   "files": [
     "dist",

@@ -13,7 +13,7 @@ import { login } from './helpers/login_helper.ts';
     .command('info') // Use 'info' as the command name
     .description('Get Latest Info From My Cu')
     .action(async () => {
-      const browser = await puppeteer.launch({ headless: false });
+      const browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
       try {
         const year = await select({
