@@ -15,12 +15,12 @@ Recommended (published package):
 
 1. Install Node.js 20+
 2. Install globally:
-   npm install -g uni
+   npm install -g my-cu-cli
 3. Run the command from anywhere:
    my-cu info
 
 Update command for clients:
-npm update -g uni
+npm update -g my-cu-cli
 
 Developer workflow (local source)
 
